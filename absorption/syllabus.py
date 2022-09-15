@@ -13,5 +13,8 @@ class Syllabus:
     
     def print_(self):
         print(f'{self.name}: {self.duration} rides to earn {self.ending_award}')
-
-  
+        
+class ExperiencedBadge:   
+    @staticmethod
+    def is_experienced(pilot):
+        return pilot.get_sorties() >= 250 and 'FL' in pilot.get_quals()

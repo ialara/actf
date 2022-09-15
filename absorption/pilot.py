@@ -4,23 +4,14 @@ Created on Wed Sep 14 17:15:02 2022
 
 @author: ilara
 """
+from syllabus import ExperiencedBadge
 
 class Pilot:
     """An Air Force F-16 pilot that fills squadron billets"""
-    # Syllabus lengths (number of UP sorties)
-    syllabi_rides = {ug: dur for ug, dur in zip(ug_names, ug_rides)}
-
-    # Quals awarded when completing upgrades
-    ug_awards = {ug: q for ug, q in zip(ug_names, ug_quals)}
-
     # Everyone gets these many sorties from FTU
     ftu_sorties = 59 # Avg based on 49 WG PA release: https://bit.ly/3R8aADh
 
-    # Definition of experience
-    exp_sorties = 250
-    exp_qual = ug_quals[1] # FL
-
-    def __init__(self, id, f16_sorties, tos, api_category, quals=[], ug=None):
+    def __init__(self, id, f16_sorties=0, tos=0, api_category=1, quals=[], ug=None):
         self.id = id
         self.f16_sorties = self.ftu_sorties + f16_sorties
         self.tos = tos
@@ -79,8 +70,7 @@ class Pilot:
 
     def check_experience(self):
         prev_status = self.is_exp
-        self.is_exp = (self.f16_sorties >= self.exp_sorties and 
-                      self.exp_qual in self.quals)
+        self.is_exp = ExperiencedBadge.is_experienced(self)
         if self.is_exp and not prev_status:
             self.log('EXPERIENCED', prefix='**')
 

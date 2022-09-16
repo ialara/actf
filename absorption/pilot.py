@@ -4,20 +4,18 @@ Created on Wed Sep 14 17:15:02 2022
 
 @author: ilara
 """
-from syllabus import ExperiencedBadge
+from .syllabus import ExperiencedBadge
 
 class Pilot:
     """An Air Force F-16 pilot that fills squadron billets"""
-    # Everyone gets these many sorties from FTU
-    ftu_sorties = 59 # Avg based on 49 WG PA release: https://bit.ly/3R8aADh
-
-    def __init__(self, id, f16_sorties=0, tos=0, api_category=1, quals=[], ug=None):
+    # Default 59 sorties is avg from FTU based on 49 WG PA release: https://bit.ly/3R8aADh
+    def __init__(self, id, f16_sorties=59, tos=0, api_category=1, quals=[], ug=None):
         self.id = id
-        self.f16_sorties = self.ftu_sorties + f16_sorties
+        self.f16_sorties = f16_sorties
         self.tos = tos
         self.quals = quals
         self.is_exp = False
-        self.check_experience()
+        #self.check_experience()
         self.api_category = 1 if not self.is_exp else api_category
         self.ug = None
         if ug is not None:
@@ -25,6 +23,9 @@ class Pilot:
 
     def log(self, msg, prefix='>>'):
         print(f'{prefix} PID {self.id} {msg}')
+        
+    def log_warn(self, msg, prefix='WARNING: '):
+        self.log(msg)
 
     def enroll_upgrade(self, ug):
         assert self.ug is None, 'Pilot already enrolled in upgrade'
@@ -53,20 +54,22 @@ class Pilot:
 
     def fly_sortie(self):
         self.f16_sorties += 1
-        self.check_experience()
 
     def award_qual(self, qual):
-        assert qual in self.ug_awards.values(), 'Invalid qualification specified'
-        assert qual not in self.quals, 'Pilot already qualified'
+        #assert qual in self.ug_awards.values(), 'Invalid qualification specified'
+        if qual in self.quals:
+            warn_msg = f'Duplicate qual attempt - Pilot {self.id} already \
+                         qualified as {qual}. Did nothing.'
+            self.log_warn(warn_msg)
+            return
+        
         self.quals.append(qual)
         self.log(f'awarded: {qual}', prefix='++')
-        self.check_experience()
 
     def remove_qual(self, qual):
         assert qual in self.quals, 'Pilot does not have this qualification'
         self.quals.remove(qual)
         self.log(f'un-awarded: {qual}', prefix='--')
-        self.check_experience()
 
     def check_experience(self):
         prev_status = self.is_exp
@@ -75,8 +78,19 @@ class Pilot:
             self.log('EXPERIENCED', prefix='**')
 
     def increment_tos(self, months=1):
-      assert isinstance(months, (int, float)), 'Months must be numeric'
+      if not isinstance(months, (int, float)):
+          raise TypeError('Months must be numeric')
       self.tos += months
+      if self.tos < 0:
+          self.tos = 0
+          warn_msg = f'Pilot {self.id} attempt to set negative TOS. Set TOS to {self.tos}.'
+          self.log_warn(warn_msg)
+      
+    def get_sorties(self):
+        return self.f16_sorties
+    
+    def get_quals(self):
+        return self.get_quals()
 
     def return_experience(self):
       return self.is_exp

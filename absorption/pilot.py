@@ -95,7 +95,7 @@ class Pilot:
     def return_experience(self):
       return self.is_exp
 
-    def return_upgrade(self):
+    def get_upgrade(self):
       return self.ug
 
     def return_api(self):

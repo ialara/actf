@@ -14,6 +14,19 @@ class Syllabus:
     def print_(self):
         print(f'{self.name}: {self.duration} rides to earn {self.ending_award}')
         
+    def specify_support_pilot_resources(self, fls, wgs):
+        assert len(fls) == len(wgs) == self.duration, 'Lengths mismatch'
+        resources = []
+        for ride in range(self.duration):
+            resources.append({'IP': 1,
+                            'FL': fls[ride],
+                            'WG': wgs[ride]})
+        self.support_pilot_resources = resources   
+        
+    def get_support_pilot_resources_for_ride(self, ride):
+        return self.support_pilot_resources[ride]
+        
+        
 class ExperiencedBadge:   
     @staticmethod
     def is_experienced(pilot):

@@ -30,39 +30,17 @@ class Scheduler:
                       Either pass priorities as argument, or call set_ug_priorities().
                       ''')
                 return students
-        
-        print('NACHOOO: priorities is: ',priorities)
+
         ranks = self.assign_ug_priorities(ugs, priorities)    
         for i, student in enumerate(students):
             student.ug_priority = ranks[i]
             
         return sorted(students, key=lambda x: x.ug_priority)
     
-    # def prioritize_students(self, students, philosophy='fixed', tiebreaker=None,
-    #                         priorities=None):
-        
-    #     tiebreakers = {'flight_date': self.prioritize_students_by_flight_date}
-        
-    #     philosophies = {'fixed': lambda x: x,
-    #                     'upgrade': self.prioritize_students_by_ug}
-        
-    #     if tiebreaker is not None:
-    #         try:
-    #             tie_func = tiebreakers[tiebreaker]
-    #         except KeyError:
-    #             print('Invalid tiebreaker method.')
-    #             return students    
-    #         students = tie_func(students)
-            
-    #     try:
-    #         sort_func = philosophies[philosophy]
-    #     except KeyError:
-    #         print('Invalid prioritization philosophy.')
-    #         return students
-        
-    #     prioritized = sort_func(students, priorities)
-        
-    #     return prioritized
+    def prioritize_students_by_ug_then_date(self, students, priorities=None):
+        inner_sort = self.prioritize_students_by_flight_date(students)
+        prioritized = self.prioritize_students_by_ug(inner_sort, priorities)
+        return prioritized
 
             
         

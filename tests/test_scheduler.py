@@ -20,6 +20,11 @@ class MockStudent:
     
     def get_upgrade(self):
         return self.ug
+    
+class MockIP:
+    def __init__(self, i, sorties=200):
+        self.id = i
+        
         
 days = [1,     10,     3,     4,      2,     9,    9,      2]
 ugs = ['IPUG','IPUG', 'FLUG', 'MQT', 'FLUG', 'MQT', 'MQT', 'FLUG']
@@ -72,16 +77,23 @@ def test_students_prioritized_by_ug(my_students, my_scheduler, ug_priorities):
     actual_ids = [student.id for student in prioritized]
     assert actual_ids == expected_ids
     
-def test_scheduling_philosophy_upgrade_then_date(my_students, my_scheduler, ug_priorities):
+def test_scheduling_philosophy_ug_then_date(my_students, my_scheduler, ug_priorities):
     expected_ids = [3, 5, 6, 0, 1, 4, 7, 2] # See above. Matches with same ug/date are left in order passed
-    prioritized = my_scheduler.prioritize_students_by_flight_date(my_students)
-    prioritized = my_scheduler.prioritize_students_by_ug(prioritized, ug_priorities)
+    # 
+    prioritized = my_scheduler.prioritize_students_by_ug_then_date(my_students, ug_priorities)
     actual_ids = [student.id for student in prioritized]
     assert actual_ids == expected_ids
     
 def test_set_ug_priorities(my_scheduler, ug_priorities):
     my_scheduler.set_ug_priorities(ug_priorities)
     assert my_scheduler.ug_priorities == ug_priorities
+    
+def test_determine_daily_ug_support_pilot_requirements(my_scheduler, my_students):
+    expected = 46
+    students = my_students
+    support = support_pilots
+    actual = my_scheduler.determine_daily_ug_support_reqs(students, support)
+    assert actual == expected
 
 if __name__ == '__main__':
     pytest.main(["-v"])

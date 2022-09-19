@@ -86,5 +86,5 @@ def test_get_support_resources_with_bad_ride_num_raises_IndexError(my_syllabus):
     with pytest.raises(IndexError):
         my_syllabus.get_support_pilot_resources_for_ride(5)  
 
-if __name__ == '__main__':
-    pytest.main()
+# if __name__ == '__main__':
+#     pytest.main()

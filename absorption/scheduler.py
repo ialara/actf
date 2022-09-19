@@ -42,6 +42,15 @@ class Scheduler:
         prioritized = self.prioritize_students_by_ug(inner_sort, priorities)
         return prioritized
 
+    def determine_student_sortie_support_reqs(self, students, syllabi):
+        for s in students:
+            syllabus = syllabi[s.get_upgrade()]
+            ride = s.get_next_ug_ride()
+            s.next_ug_sortie_support_reqs = syllabus.get_support_pilot_resources_for_ride(ride)
+            
+        return students
+            
+        
             
         
         

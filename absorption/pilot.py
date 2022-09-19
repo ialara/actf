@@ -91,6 +91,9 @@ class Pilot:
     
     def get_quals(self):
         return self.get_quals()
+    
+    def get_next_ug_ride(self):
+        return self.ride_num
 
     def return_experience(self):
       return self.is_exp

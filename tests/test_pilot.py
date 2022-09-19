@@ -86,5 +86,5 @@ def test_award_invalid_qualification_gives_warning(my_pilot, mocker):
     my_pilot.award_qual(qual)
     mocked_func.assert_called_once()
     
-if __name__ == '__main__':
-    pytest.main(["-v"])
+# if __name__ == '__main__':
+#     pytest.main(["-v"])

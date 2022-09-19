@@ -10,7 +10,7 @@ class Scheduler:
         self.name = name
         # self.ug_priorities = {}
         
-    def set_ug_priorities(self, priorities_dict):
+    def specify_ug_priorities(self, priorities_dict):
         self.ug_priorities = priorities_dict
         
     def prioritize_students_by_flight_date(self, students):
@@ -49,6 +49,25 @@ class Scheduler:
             s.next_ug_sortie_support_reqs = syllabus.get_support_pilot_resources_for_ride(ride)
             
         return students
+    
+    def allocate_ug_sorties(self, students, sortie_limit):
+        sorties_remaining = sortie_limit
+        scheduled_students = []
+        students_iter = iter(students)
+        
+        next_stud = next(students_iter)
+        sum_support_reqs = sum(next_stud.next_ug_sortie_support_reqs.values())
+        while sorties_remaining > sum_support_reqs - 1:
+            scheduled_students.append(next_stud)
+            sorties_remaining -= sum_support_reqs + 1
+            try: 
+                next_stud = next(students_iter)
+                sum_support_reqs = sum(next_stud.next_ug_sortie_support_reqs.values())
+            except StopIteration:
+                break
+        
+        return scheduled_students
+        
             
         
             

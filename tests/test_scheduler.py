@@ -136,8 +136,8 @@ def test_scheduling_philosophy_ug_then_date(my_students, my_scheduler, ug_priori
     actual_ids = [student.id for student in prioritized]
     assert actual_ids == expected_ids
     
-def test_set_ug_priorities(my_scheduler, ug_priorities):
-    my_scheduler.set_ug_priorities(ug_priorities)
+def test_specify_ug_priorities(my_scheduler, ug_priorities):
+    my_scheduler.specify_ug_priorities(ug_priorities)
     assert my_scheduler.ug_priorities == ug_priorities
     
 def test_determine_student_sortie_support_reqs(my_scheduler, my_students, my_syllabi):
@@ -160,6 +160,34 @@ def test_determine_student_sortie_support_reqs(my_scheduler, my_students, my_syl
                 {'IP': 1, 'FL': 3, 'WG': 3}]
     actual_students = my_scheduler.determine_student_sortie_support_reqs(my_students, my_syllabi)
     assert [s.next_ug_sortie_support_reqs for s in actual_students] == expected
+    
+def test_allocate_ug_sorties_within_daily_sortie_limit(my_scheduler, my_students):
+    # Assumes students have already been prioritized; this test just checks limiting logic.
+    sortie_limit = 14 #e.g, 8 turn 6
+    # Notional, do not align with student syllabi specified in my_students.
+    support_reqs = [{'IP': 1, 'FL': 0, 'WG': 0}, # Student 0 (1+student = 2 sorties)
+                    {'IP': 1, 'FL': 3, 'WG': 3}, # Student 1 (8 sorties)
+                    {'IP': 1, 'FL': 0, 'WG': 0}, # Student 2 (2 sorties)
+                    ## == Should stop here (12 sorties) because cannot fly next chunk ==
+                    {'IP': 1, 'FL': 2, 'WG': 2}, # Student 3 (6 sorties)
+                    {'IP': 1, 'FL': 3, 'WG': 3}, # Student 4 (8 sorties)
+                    {'IP': 1, 'FL': 0, 'WG': 0}] # Student 5 (2 sorties)
+    
+    for i in range(len(support_reqs)):
+        my_students[i].next_ug_sortie_support_reqs = support_reqs[i]
+        
+    expected_students_scheduled = [0, 1, 2]
+    expected_sorties_scheduled = 12
+    
+    actual_students = my_scheduler.allocate_ug_sorties(my_students, sortie_limit)
+    actual_sorties = len(actual_students) + sum([sum(s.next_ug_sortie_support_reqs.values()) for s in actual_students])
+    assert [s.id for s in actual_students] == expected_students_scheduled
+    assert actual_sorties == expected_sorties_scheduled
+    assert actual_sorties <= sortie_limit
+    
+    
+        
+    
     
 
 @pytest.mark.xfail # Not Implemented   

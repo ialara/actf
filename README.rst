@@ -6,7 +6,7 @@ Development Guide
 -----------
 Notebooks with ``baseline`` in the title are the best starting point. **The folders are a relic of an abandoned attempt to convert the model from a notebook to a Python project structure**. They are not maintained, nor do I recommend using them.
 
-The other notebooks contain very similar versions of the model, which were run to answer specific scenarios. **The most stable versions will include ``baseline`` in the title.**
+The other notebooks contain very similar versions of the model, which were run to answer specific scenarios. **The most stable versions will include** ``baseline`` **in the title.**
 
 License
 ----------
